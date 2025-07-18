@@ -1,103 +1,87 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const LETTER_MESSAGE = `Dear Kristelle Joy,\n\nI know na you are always surprising me with letters and stuff like this and I don't give back the love you deserve. Now I'm writing this letter the way I wanted it to be — a letter na gawa ng isang IT student. I hope you like it.\n\nYou are very special to me and it will stay that way. I will always support you and I will always be here for you whenever you need me by your side. We are partners nga diba so don't be shy to ask me for help. I love you so much. I miss you na agad. To more exciting dates and more exciting memories.✨💖\n\nWith love,\nBrian Sebastian\n`;
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [stage, setStage] = useState(0);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleEnvelopeClick = () => {
+    if (stage === 0) {
+      setStage(1);
+      setTimeout(() => setStage(2), 600);
+      setTimeout(() => setStage(3), 1400);
+      if (navigator.vibrate) navigator.vibrate(100);
+    } else {
+      setStage(0);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-100 via-fuchsia-100 to-rose-200 font-sans px-4 py-10">
+      <style jsx global>{`
+        html { font-family: 'Poppins', 'Inter', 'Quicksand', 'Segoe UI', Arial, sans-serif; }
+      `}</style>
+
+      <div className="text-center mb-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-pink-600 drop-shadow-md">Happy Monthsary!!</h1>
+        <p className="text-fuchsia-600 text-lg mt-1">Tap the envelope to open my message for you.</p>
+      </div>
+
+      <div className="relative w-64 h-48 sm:w-72 sm:h-56 md:w-80 md:h-60 cursor-pointer perspective-1000" onClick={handleEnvelopeClick}>
+        {/* Envelope Base */}
+        <div className="absolute bottom-0 w-full h-2/3 bg-white border border-pink-300 rounded-b-2xl shadow-md z-10"></div>
+
+        {/* Flap with realistic 3D open effect */}
+        <motion.div
+          className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-pink-200 to-white rounded-t-2xl border border-pink-300 z-30 origin-bottom"
+          initial={{ rotateX: 0 }}
+          animate={{ rotateX: stage > 0 ? -120 : 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          style={{ transformStyle: "preserve-3d", transformOrigin: "bottom center", boxShadow: "0 6px 14px rgba(255, 182, 193, 0.3)" }}
+        />
+
+        {/* Heart Seal */}
+        {stage === 0 && (
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 text-3xl">
+            ❤️
+          </div>
+        )}
+
+        {/* Letter Animation */}
+        <AnimatePresence>
+          {stage >= 2 && (
+            <motion.div
+              key="letter"
+              className={`fixed left-0 top-0 w-full h-full flex items-center justify-center z-[60] pointer-events-none ${stage === 3 ? '' : 'pointer-events-none'}`}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={stage === 3
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 1, y: -64, scale: 0.95 }
+              }
+              exit={{ opacity: 0, y: 20, scale: 0.9 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <div
+                className="w-[90vw] max-w-md bg-white text-fuchsia-700 rounded-xl px-4 py-6 text-sm sm:text-base md:text-lg font-medium shadow-lg border border-fuchsia-200 max-h-[70vh] overflow-y-auto whitespace-pre-line flex flex-col items-center justify-center"
+                style={{ boxShadow: '0 8px 32px 0 rgba(255, 182, 193, 0.18)' }}
+              >
+                <div className="flex justify-center gap-2 mb-2 text-xl">
+                </div>
+                {LETTER_MESSAGE}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Decorative Hearts */}
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex gap-2 z-40 pointer-events-none">
+          <span className="text-pink-400 text-2xl animate-bounce">💌</span>
+          <span className="text-fuchsia-400 text-xl animate-pulse">💖</span>
+          <span className="text-rose-400 text-lg animate-bounce">✨</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
